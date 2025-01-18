@@ -1,0 +1,73 @@
+<!-- register.html -->
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/god.css' %}">{% endblock %}
+{% block content %}
+<main class="main rtl text-right">
+    <nav class="breadcrumb-nav">
+        <div class="container">
+            <ul class="breadcrumb">
+                <li><a href="{% url 'store:index' %}"><i class="d-icon-home"></i></a></li>
+                <li><a href="{% url 'store:index' %}">فروشگاه</a></li>
+                <li>حساب کاربری</li>
+            </ul>
+        </div>
+    </nav>
+    <div class="page-content mt-6 pb-2 mb-10">
+        <div class="container">
+            <div class="login-popup">
+                <div class="form-box">
+                    <div class="tab tab-nav-simple tab-nav-boxed form-tab">
+                        <ul class="nav nav-tabs nav-fill align-items-center border-no justify-content-center mb-5"
+                            role="tablist">
+
+                            <li class="nav-item">
+                                <a class="nav-link active border-no lh-1 ls-normal" href="#register">ثبت نام</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="register">
+                                <div class="login-field">
+                                    <div class="login-background">
+
+                                        <div class="login-form">
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <div class="field username-field form-control">
+                                                    {{ form.email }}
+                                                </div>
+                                                <div class="field password-field form-control">
+                                                    {{ form.password }}
+                                                </div>
+                                                <div class="field button-field">
+                                                    <button class="btn btn-dark btn-block btn-rounded" type="submit">ثبت نام</button>
+                                                </div>
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-choice text-center">
+                                    <label class="ls-m">یا ثبت نام با</label>
+                                    <div class="social-links">
+                                        <a href="#" class="social-link social-google fab fa-google border-no disabled"></a>
+                                        <a href="#" class="social-link social-facebook fab fa-facebook-f border-no disabled"></a>
+                                        <a href="#" class="social-link social-twitter fab fa-twitter border-no disabled"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

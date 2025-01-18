@@ -1,0 +1,123 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block content %}
+
+
+
+<div class="code-template">
+                            <div class="row product-wrapper">
+
+                                {% for item in products %}
+                                <div class="col-md-3 col-6">
+                                    <div class="product text-center">
+                                        <figure class="product-media">
+                                            <a href="{{ item.get_absolute_url }}">
+                                                <img src="{{ item.images.first.file.url }}" alt="product" width="280" height="315">
+                                            </a>
+                                            <div class="product-action-vertical">
+                                                <a href="#" class="btn-product-icon btn-cart" data-toggle="modal" data-target="#addCartModal" title="اضافه به خرید" data-product-id="{{ item.id }}"><i class="d-icon-bag"></i></a>
+                                                <a href="#" class="btn-product-icon btn-wishlist" title="اضافه به علاقه مندی" data-product-id="{{ item.id }}"><i class="d-icon-heart"></i></a>
+                                            </div>
+                                            <div class="product-action">
+                                                <a href="{{ item.get_absolute_url }}" class="btn-product" title="مشاهده و انتخاب ">مشاهده و انتخاب
+                                                    </a>
+                                            </div>
+                                        </figure>
+                                        <div class="product-details rtl">
+                                            <div class="product-cat">
+                                                <a href="{% url 'store:product_by_category' item.category.id item.category.slug %}">{{ item.category.name }}</a>
+                                            </div>
+                                            <h3 class="product-name">
+                                                <a href="{{ item.get_absolute_url }}">{{ item.name }}</a>
+                                            </h3>
+                                            <div class="product-price">
+                                                <span class="price"> {{ item.new_price }} تومان </span>
+                                            </div>
+                                            <div class="ratings-container">
+
+                                                <a href="{{ item.get_absolute_url }}" class="rating-reviews">( از {{ item.sell }}خرید )</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // اضافه کردن به سبد خرید
+        $('.btn-cart').click(function (e) {
+            e.preventDefault();
+            var button = $(this);
+            var productId = button.data('product-id');
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "cart:add-to-cart" 0 %}'.replace('0', productId),
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (data) {
+                    // به‌روزرسانی سبد خرید
+                    $('.reload').load(location.href + " .reload");
+                    $('.price-total-1').text(data.total_price)
+                },
+                error: function (xhr) {
+                    var response = JSON.parse(xhr.responseText);
+                    console.log(response.error || "خطایی رخ داده است.");
+                }
+            });
+        });
+
+        // حذف از سبد خرید
+        $(document).on('click', '.remove_item', function (e) {
+            e.preventDefault();
+            var button = $(this);
+            var productId = button.data('product-id');
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "cart:remove-item" %}',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'item_id': productId
+                },
+                success: function (data) {
+                    if (data.success) {
+                        button.closest('.product').remove();
+                        $('.price-total-1').text(data.total_price)
+
+
+                        if (data.item_count === 0) {
+                            $('.reload').html('<p>سبد خرید شما خالی است</p>');
+                        }
+                    } else {
+                        console.log(data.error || "خطایی رخ داده است.");
+                    }
+                },
+                error: function (xhr) {
+                    console.log("خطایی رخ داده است.");
+                }
+            });
+        });
+        $('.btn-wishlist').click(function () {
+        var button = $(this);
+        var product_id = button.data('product-id')
+
+            $.ajax({
+               url: '{% url 'store:add_to-favorite' 0 %}'.replace('0', product_id),
+                data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function () {
+                   console.log('success')
+                },
+                error: function (error) {
+                   console.log(error)
+                },
+            });
+        });
+    });
+</script>
+
+
+{% endblock %}

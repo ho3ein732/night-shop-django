@@ -1,0 +1,221 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/god.css' %}">{% endblock %}
+       {% block content %}
+        <main class="main cart rtl text-right">
+            <div class="page-content pt-7 pb-10">
+                <div class="step-by pr-4 pl-4">
+                    <h3 class="title title-simple title-step active"><a href="cart.html" class="disabled">1. سبد خرید</a></h3>
+                    <h3 class="title title-simple title-step"><a href="checkout.html" class="disabled">2. صورت حساب</a></h3>
+                    <h3 class="title title-simple title-step"><a href="order.html" class="disabled">3. تکمیل خرید</a></h3>
+                </div>
+                <div class="container mt-7 mb-2">
+                    <div class="row">
+                        <div class="col-lg-8 col-md-12 pr-lg-4">
+                            <table class="shop-table cart-table">
+                                <thead>
+                                    <tr>
+                                        <th><span>محصول</span></th>
+                                        <th></th>
+                                        <th><span>قیمت</span></th>
+                                        <th><span>تعداد</span></th>
+                                        <th>قیمت بعد از تخفیف</th>
+                                    </tr>
+                                </thead>
+                                    <tbody class="reload-cart">
+                                        {% for item in cart %}
+                                            <tr>
+                                                <td class="product-thumbnail">
+                                                    <figure>
+                                                        <a href="{{ item.product.get_absolute_url }}">
+                                                            <img src="{{ item.product.images.first.file.url }}" width="100" height="100" alt="product">
+                                                        </a>
+                                                    </figure>
+                                                </td>
+                                                <td class="product-name">
+                                                    <div class="product-name-section">
+                                                        <a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>
+                                                    </div>
+                                                </td>
+                                                <td class="product-subtotal">
+                                                    <span class="amount">{{ item.price }} تومان</span>
+                                                </td>
+                                                <td class="product-quantity">
+                                                    <div class="input-group" data-product-id="{{ item.product.id }}">
+                                                        <button class="quantity-minus d-icon-minus"></button>
+                                                        <input class="form-control my-quantity" type="number" value="{{ item.quantity }}" disabled>
+                                                        <button class="quantity-plus d-icon-plus"></button>
+                                                    </div>
+                                                </td>
+
+                                                <td class="product-price">
+                                                    <span class="amount">{{ item.product.new_price }} تومان</span>
+                                                </td>
+                                                <td class="product-close">
+                                                    <a href="#" class="product-remove" title="حذف محصول" data-product-id="{{ item.product.id }}">
+                                                        <i class="fas fa-times"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="6" class="text-center">سبد خرید خالی است.</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+
+                            </table>
+                            <div class="cart-actions mb-6 pt-4">
+                                <a href="{% url 'store:index' %}" class="btn btn-dark btn-md btn-rounded btn-icon-left ml-4 mb-4">
+                                    ادامه خرید<i class="d-icon-arrow-left"></i>
+                                </a>
+                                <button type="submit"
+                                        class="btn btn-outline btn-dark btn-md btn-rounded btn-disabled">
+                                    به روز رسانی سبد خرید
+
+                                </button>
+                            </div>
+                        </div>
+                        <aside class="col-lg-4 sticky-sidebar-wrapper">
+                            <div class="sticky-sidebar" data-sticky-options="{'bottom': 20}">
+                                <div class="summary mb-4">
+                                    <h3 class="summary-title">جمع سبد خرید</h3>
+                                    <table class="shipping">
+                                        <tr class="summary-subtotal">
+                                            <td>
+                                                <h4 class="summary-subtitle">جمع بعد از تخفیف</h4>
+                                            </td>
+                                            <td>
+                                                <p class="summary-subtotal-price">{{ cart.get_total_price }} تومان</p>
+                                            </td>
+                                        </tr>
+                                        <tr class="sumnary-shipping shipping-row-last">
+
+                                        </tr>
+                                    </table>
+
+                                    <table class="total">
+                                        <tr class="summary-subtotal">
+                                            <td>
+                                                <h4 class="summary-subtitle">جمع</h4>
+                                            </td>
+                                            <td>
+                                                <p class="summary-total-price ls-s">{{ cart.get_total_price}} تومان</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <a href="{% url 'cart:add-address' %}" class="btn btn-dark btn-rounded btn-checkout {% if not cart %}disabled{% endif %}">
+                                        صورت حساب
+                                    </a>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+           <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+           <script>
+                $(document).ready(function() {
+                    $('.product-remove').click(function(e) {
+                        e.preventDefault();
+                        var button = $(this);
+                        var ProductId = button.data('product-id');
+                        $.ajax({
+                            url: '{% url "cart:remove-item" %}',
+                            method: 'POST',
+                            data: {
+                                'item_id': ProductId,
+                                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                            },
+                            success: function(data) {
+                                if (data.success) {
+                                    button.closest('tr').remove();
+                                    $('.summary-subtotal-price').text(data.total_price + "تومان");
+                                    $('.summary-total-price').text(data.total_price + "تومان");
+
+
+                                    if ($('.reload-cart tr').length === 0) {
+                                        $('.reload-cart').html('<tr><td colspan="6" class="text-center">سبد خرید خالی است.</td></tr>');
+                                        $('.btn-checkout').addClass('disabled')
+                                    }
+                                } else {
+                                    alert(data.message || 'خطا در حذف محصول.');
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.log('AJAX Error:', error);
+                                alert('مشکلی در ارتباط با سرور وجود دارد.');
+                            }
+                        });
+                    });
+
+                    $('.quantity-minus').click(function(e) {
+                        e.preventDefault();
+                        var button = $(this);
+                        var productId = button.closest('.input-group').data('product-id'); // شناسایی شناسه محصول
+
+                        $.ajax({
+                            url: '{% url "cart:update-quantity" %}',
+                            type: 'POST',
+                            data: {
+                                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                'action': 'decrease',
+                                'item_id': productId
+                            },
+                            success: function(data) {
+                                var quantityInput = button.closest('.input-group').find('input');
+                                quantityInput.val(data.quantity);
+
+                                $('.summary-subtotal-price').text(data.total_price+ "تومان");
+                                $('.summary-total-price').text(data.total_price+ "تومان");
+
+                                if (data.quantity === 0) {
+                                    button.closest('tr').remove();
+
+                                    if ($('.reload-cart tr').length === 0) {
+                                        $('.reload-cart').html('<tr><td colspan="6" class="text-center">سبد خرید خالی است.</td></tr>');
+                                        $('.btn-checkout').addClass('disabled');
+                                    }
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.log('AJAX Error:', error);
+                                alert('مشکلی در ارتباط با سرور وجود دارد.');
+                            }
+                        });
+                    });
+
+                    // افزایش تعداد محصول
+                    $('.quantity-plus').click(function(e) {
+                        e.preventDefault();
+                        var button = $(this);
+                        var productId = button.closest('.input-group').data('product-id');
+
+                        $.ajax({
+                            url: '{% url "cart:update-quantity" %}',
+                            type: 'POST',
+                            data: {
+                                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                'action': 'add',
+                                'item_id': productId
+                            },
+                            success: function(data) {
+                                var quantityInput = button.closest('.input-group').find('input');
+                                quantityInput.val(data.quantity);
+
+                                // بروزرسانی قیمت‌ها
+                                $('.summary-subtotal-price').text(data.total_price + "تومان");
+                                $('.summary-total-price').text(data.total_price + 'تومان');
+                            },
+                            error: function(xhr, status, error) {
+                                console.log('AJAX Error:', error);
+                                alert('مشکلی در ارتباط با سرور وجود دارد.');
+                            }
+                        });
+                    });
+                });
+           </script>
+{% endblock %}

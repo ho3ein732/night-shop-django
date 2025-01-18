@@ -1,0 +1,250 @@
+{% load static %}
+    <div class="page-wrapper">
+        <h1 class="d-none">قالب ریود، دمو شماره یک</h1>
+    </div>
+<!-- End Header -->
+<header class="header rtl text-right">
+    <div class="header-top ">
+        <div class="container">
+            <div class="header-right">
+                <p class="welcome-msg">به فروشگاه الــماس شــب خوش آمـدید.</p>
+            </div>
+            <div class="header-left ">
+
+                <span class="divider"></span>
+                <a href="{% url 'store:contact_us' %}" class="contact d-lg-show"><i class="d-icon-map"></i>تماس با ما</a>
+                {% if user.is_authenticated  %}
+                    <a href="{% url 'account:logout' %}" class="link-to-tab">خروج</a>
+                    <a href="{% url 'account:detail' %}" class="link-to-tab"><i class="d-icon-user"></i>{{ user.email }}</a>
+                    {% else %}
+                    <a href="{% url 'account:login' %}" class="link-to-tab"><i class="d-icon-user"></i>ورود</a>
+                    <a href="{% url 'account:register' %}" class="link-to-tab"><i class="d-icon-user"></i>ثبت نام</a>
+                {% endif %}
+
+        </div>
+    </div>
+    </div>
+
+    <!-- End HeaderTop -->
+    <div class="header-middle sticky-header fix-top sticky-content  ">
+        <div class="container">
+            <div class="header-right">
+                <a href="#" class="mobile-menu-toggle">
+                    <i class="d-icon-bars2"></i>
+                </a>
+                <a href="{% url 'store:index' %}" class="logo">
+                    <img src="{% static 'images/logo.png' %}" alt="logo" width="153" height="44" />
+                </a>
+                <!-- End Logo -->
+                <div class="header-search hs-simple">
+                    <form action="{% url 'store:search' %}" class="input-wrapper" method="get">
+                        <input type="text" class="form-control" name="query" autocomplete="off"
+                               placeholder="جستجو ..." required />
+                        <button class="btn btn-search" type="submit" title="submit-button">
+                            <i class="d-icon-search"></i>
+                        </button>
+                    </form>
+                </div>
+                <!-- End Header Search -->
+            </div>
+<div class="header-left ">
+    <a href="tel:#" class="icon-box icon-box-side">
+        <div class="icon-box-icon ml-0 ml-lg-2">
+            <i class="d-icon-phone"></i>
+        </div>
+        <div class="icon-box-content d-lg-show">
+            <h4 class="icon-box-title">پشتیبانی سایت:</h4>
+            <p>09112345678</p>
+        </div>
+    </a>
+    <span class="divider"></span>
+    <div class="wishlist">
+        <a href="{% url 'store:list_favorite' %}" class="wishlist-toggle">
+            <i class="d-icon-heart"></i>
+        </a>
+        <div class="canvas-overlay"></div>
+        <div class="dropdown-box scrollable">
+            <div class="canvas-header">
+                <h4 class="canvas-title">علاقمندی</h4>
+                <a href="{% url 'store:list_favorite' %}" class="btn btn-dark btn-link btn-icon-right  btn-close">بستن<i
+                        class="d-icon-arrow-left"></i><span class="sr-only">محصولات مورد علاقه</span></a>
+            </div>
+            <div class="products scrollable">
+                <!-- در اینجا محصولات علاقه‌مندی‌ها را باید نمایش دهید -->
+            </div>
+            <a href="{% url 'store:list_favorite' %}" class="btn btn-dark wishlist-btn mt-4">
+                <span>نمایش لیست</span></a>
+        </div>
+    </div>
+    <span class="divider"></span>
+    <div class="dropdown cart-dropdown type2 off-canvas mr-0 mr-lg-2">
+        <a href="#" class="cart-toggle label-block link">
+            <div class="cart-label d-lg-show">
+                <span class="cart-name">سبد خرید:</span>
+            </div>
+            <i class="d-icon-bag"></i> <!-- نمایش تعداد اقلام سبد خرید -->
+        </a>
+        <div class="canvas-overlay"></div>
+        <div class="dropdown-box">
+            <div class="canvas-header">
+                <h4 class="canvas-title">سبد خرید</h4>
+                <a href="#" class="btn btn-dark btn-link btn-icon-right  btn-close">بستن<i
+                        class="d-icon-arrow-left"></i><span class="sr-only">سبد خرید</span></a>
+            </div>
+            <div class="products scrollable reload">
+                {% for item in cart %}
+                <div class="product product-cart">
+                    <figure class="product-media">
+                        <a href="{% url 'store:product_detail' item.product.id item.product.slug %}">
+                            <img src="{{ item.product.images.first.file.url }}" alt="product" width="80" height="88" />
+                        </a>
+                        <button class="btn btn-link btn-close remove_item" data-product-id="{{ item.product.id }}">
+                            <i class="fas fa-times"></i><span class="sr-only">بستن</span>
+                        </button>
+                    </figure>
+                    <div class="product-detail">
+                        <a href="{% url 'store:product_detail' item.product.id item.product.slug %}" class="product-name">
+                            {{ item.product.name }}
+                        </a>
+                        <div class="price-box">
+                            <span class="product-price">{{ item.product.price }} تومان</span>
+                        </div>
+                        <div class="quantity-box">
+                            <span>تعداد: {{ item.quantity }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>سبد خرید شما خالی است</p>
+                {% endfor %}
+            </div>
+            <div class="cart-total">
+                <label>جمع سبد:</label>
+                <span class="price price-total-1" >{{ cart.get_total_price }} تومان</span> <!-- مجموع قیمت -->
+            </div>
+            <div class="cart-action">
+                <a href="{% url 'cart:cart-detail' %}" class="btn btn-dark btn-link">سبد خرید</a>
+                <a href="{% url 'cart:add-address' %}" class="btn btn-dark"><span>پرداخت</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+        </div>
+    </div>
+    <div class="header-bottom d-lg-show ">
+        <div class="container">
+            <div class="header-right">
+                <nav class="main-nav">
+                    <ul class="menu">
+                        <li class="active">
+                            <a href="{% url 'store:index' %}">صفحه نخست</a>
+                        </li>
+                        <li class="submenu submenu-container">
+                            <a href="{% url 'store:index' %}">دسته بندی </a>
+                            <div class="megamenu">
+                                <div class="row">
+                                    <div class="col-6 col-sm-4 col-md-4 col-lg-3">
+                                        <h4 class="menu-title">دسته بندی ها</h4>
+                                        <ul>
+                                            <li><a href="{% url 'store:product_by_category' category_id=10 slug="artistic" %}">هنری ها</a></li>
+                                            <li><a href="{% url 'store:product_by_category' category_id=6 slug="household-items" %}">مصارف خانگی</a> </li>
+                                            <li><a href="{% url 'store:product_by_category' category_id=1 slug="household-items" %}">طروف تزئینی</a>  </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-md-4 col-lg-3">
+                                        <h4 class="menu-title">-</h4>
+                                        <ul>
+                                            <li><a href="{% url 'store:index' %}">-</a></li>
+                                            <li><a href="{% url 'store:index' %}">-</a></li>
+                                            <li><a href="{% url 'store:index' %}">-</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-md-4 col-lg-3">
+                                        <h4 class="menu-title">-</h4>
+                                        <ul>
+                                            <li><a href="{% url 'store:index' %}">-</a></li>
+                                            <li><a href="{% url 'store:index' %}">- </a></li>
+                                            <li><a href="{% url 'store:index' %}"> - </a></li>
+
+                                        </ul>
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-md-4 col-lg-3 menu-banner menu-banner1 banner banner-fixed">
+                                        <figure>
+                                            <img src="{% static 'images/category.jpg' %}" alt="Menu banner" width="221"
+                                                 height="330" />
+                                        </figure>
+{#                                        <div class="banner-content y-50 text-right rtl">#}
+{#                                            <h4 class="banner-subtitle font-weight-bold text-primary ls-m">#}
+{#                                                فروش#}
+{#                                            </h4>#}
+{#                                            <h3 class="banner-title font-weight-bold">#}
+{#                                                <span class="">بالای</span>%70 تخفیف#}
+{#                                            </h3>#}
+{#                                            <a href="shop.html" class="btn btn-link btn-underline">#}
+{#                                                مشاهده و انتخاب <i class="d-icon-arrow-left"></i>#}
+{#                                            </a>#}
+{#                                        </div>#}
+                                    </div>
+                                    <!-- End Megamenu -->
+
+
+                                </div>
+                            </div>
+                        </li>
+                        <li class="submenu submenu-container">
+                            <a href="{% url 'store:index' %}">محصولات</a>
+                            <div class="megamenu">
+                                <div class="row">
+                                    <div class="col-6 col-sm-4 col-md-3">
+                                        <h4 class="menu-title">محصولات1</h4>
+                                        <ul>
+                                            {% for product in productss|slice:"0:10" %}
+                                            <li><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-md-3">
+                                        <h4 class="menu-title">محصولات2</h4>
+                                        <ul>
+                                            {% for product in productss|slice:"10:20" %}
+                                            <li><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-md-3">
+                                        <h4 class="menu-title">محصولات3</h4>
+                                        <ul>
+                                            {% for product in productss|slice:"20:" %}
+                                            <li><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-md-3 menu-banner menu-banner2 banner banner-fixed">
+                                        <figure>
+                                            <img src="{% static 'images/myshop-ai.jpg' %}" alt="Menu banner" width="221"
+                                                 height="330" />
+                                        </figure>
+
+                                    </div>
+                                    <!-- End MegaMenu -->
+                                </div>
+                            </div>
+                        </li>
+                        <li class="">
+                            <a href="#">صفحات</a>
+                            <ul>
+                                <li><a href="{% url 'store:about_us' %}">درباره ما</a></li>
+                                <li><a href="{% url 'account:detail' %}">حساب کاربری</a></li>
+                                <li><a href="{% url 'store:list_favorite' %}">علاقه مندی</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="{% url 'store:about_us' %}">درباره ما</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>

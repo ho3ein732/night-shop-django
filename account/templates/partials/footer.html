@@ -1,0 +1,262 @@
+{% load static %}
+        <footer class="footer rtl text-right">
+            <div class="container">
+                <div class="footer-top">
+                    <div class="row align-items-center">
+                        <div class="col-lg-3">
+                            <a href="{% url 'store:index' %}" class="logo-footer">
+                                <img src="{% static 'images/logo-footer.png' %}" alt="logo-footer" width="154" height="43" />
+                            </a>
+                            <!-- End FooterLogo -->
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="widget widget-newsletter form-wrapper form-wrapper-inline">
+                                <div class="newsletter-info mx-auto mr-lg-2 ml-lg-4">
+                                    <h4 class="widget-title">عضویت در وبسایت</h4>
+                                    <p>جزء اولین کسانی باشید که از تخفیف ها و محصولات جدید ما باخبر می شوند.</p>
+                                </div>
+                                <form action="{% url 'store:add_email' %}" class="input-wrapper input-wrapper-inline" method="post">
+                                    {% csrf_token %}
+                                    <input type="email" class="form-control text-left" name="email" id="email"
+                                        placeholder="آدرس ایمیل" required />
+                                    <button class="btn btn-primary btn-rounded btn-md mr-2" type="submit"> عضویت <i
+                                            class="d-icon-arrow-left"></i> </button>
+                                </form>
+                            </div>
+                            <!-- End Newsletter -->
+                        </div>
+                    </div>
+                </div>
+                <!-- End FooterTop -->
+                <div class="footer-middle">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6">
+                            <div class="widget widget-info">
+                                <h4 class="widget-title">اطلاعات تماس</h4>
+                                <ul class="widget-body ">
+                                    <li>
+                                        <label>شماره تلفن:</label>
+                                        <a href="tel:#">09112345678</a>
+                                    </li>
+                                    <li>
+                                        <label>ایمیل:</label>
+                                        <a href="#">mail@sample.com</a>
+                                    </li>
+                                    <li>
+                                        <label>آدرس:</label>
+                                        <a href="#">همدان-ملایر ، خیابان رجایی </a>
+                                    </li>
+                                    <li>
+                                        <label>ساعات کاری:</label>
+                                        <a href="#">8 صبح تا 9 شب</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- End Widget -->
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="widget ml-lg-4">
+                                <h4 class="widget-title">حساب کاربری</h4>
+                                <ul class="widget-body ">
+                                    <li>
+                                        <a href="{% url 'store:contact_us' %}">درباره ما</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'account:detail' %}">لیست سفارش</a>
+                                    </li>
+
+                                    <li>
+                                        <a href="#">قوانین و مقررات</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- End Widget -->
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="widget ml-lg-4">
+                                <h4 class="widget-title">صفحات وبسایت</h4>
+                                <ul class="widget-body ">
+                                    <li>
+                                        <a href="{% url 'account:login' %}">ورود</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'account:register' %}">ثبت نام</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'cart:cart-detail' %}">سبد خرید</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'store:list_favorite' %}">لیست علاقمندی</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'account:detail' %}">پیگیری سفارش</a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                            <!-- End Widget -->
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="widget widget-instagram">
+                                <h4 class="widget-title">نمادهای اعتماد</h4>
+                                <figure class="widget-body row">
+                                    <div class="nemad-box"><img src="{% static 'images/enemad.png' %}" alt="نماد اعتماد الکترونیک"></div>
+                                    <div class="nemad-box"><img src="{% static 'images/samandehi.png' %}" alt="نماد ساماندهی"></div>
+                                </figure>
+                            </div>
+                            <!-- End Instagram -->
+                        </div>
+                    </div>
+                </div>
+                <!-- End FooterMiddle -->
+                <div class="footer-bottom">
+                    <div class="footer-right">
+                        <figure class="payment">
+                            <img src="{% static 'images/payment.png' %}" alt="payment" width="159" height="29" />
+                        </figure>
+                    </div>
+                    <div class="footer-center">
+                        <p class="copyright">فروشگاه  آنلاین  شب 1402 &copy;  کلیه حقوق محفوظ است .</p>
+                    </div>
+                    <div class="footer-left ">
+                        <div class="social-links">
+                            <a href="#" title="social-link" class="social-link social-facebook fab fa-facebook-f"></a>
+                            <a href="#" title="social-link" class="social-link social-twitter fab fa-twitter"></a>
+                            <a href="#" title="social-link" class="social-link social-linkedin fab fa-linkedin-in"></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- End FooterBottom -->
+            </div>
+        </footer>
+        <!-- End Footer -->
+    </div>
+    <!-- Sticky Footer -->
+    <div class="sticky-footer sticky-content fix-bottom rtl">
+        <a href="{% url 'store:index' %}" class="sticky-link">
+            <i class="d-icon-home"></i>
+            <span>خانه</span>
+        </a>
+        <a href="{% url 'store:index' %}" class="sticky-link">
+            <i class="d-icon-volume"></i>
+            <span>محصول</span>
+        </a>
+        <a href="{% url 'store:list_favorite' %}" class="sticky-link">
+            <i class="d-icon-heart"></i>
+            <span>علاقمندی</span>
+        </a>
+        <a href="{% url 'account:detail' %}" class="sticky-link">
+            <i class="d-icon-user"></i>
+            <span>کاربری</span>
+        </a>
+        <div class="header-search hs-toggle dir-up">
+            <a href="#" class="search-toggle sticky-link">
+                <i class="d-icon-search"></i>
+                <span>جستجو</span>
+            </a>
+                    <form action="{% url 'store:search' %}" class="input-wrapper" method="get">
+                        <input type="text" class="form-control" name="query" autocomplete="off"
+                               placeholder="جستجو ..." required />
+                        <button class="btn btn-search" type="submit" title="submit-button">
+                            <i class="d-icon-search"></i>
+                        </button>
+                    </form>
+        </div>
+    </div>
+    <!-- Scroll Top -->
+    <a id="scroll-top" href="#top" title="Top" role="button" class="scroll-top"><i class="d-icon-arrow-up"></i></a>
+    <!-- MobileMenu -->
+    <div class="mobile-menu-wrapper">
+        <div class="mobile-menu-overlay">
+        </div>
+        <!-- End of Overlay -->
+        <a class="mobile-menu-close" href="#"><i class="d-icon-times"></i></a>
+        <!-- End of CloseButton -->
+        <div class="mobile-menu-container scrollable">
+                    <form action="{% url 'store:search' %}" class="input-wrapper" method="get">
+                        <input type="text" class="form-control" name="query" autocomplete="off"
+                               placeholder="جستجو ..." required />
+                        <button class="btn btn-search" type="submit" title="submit-button">
+                            <i class="d-icon-search"></i>
+                        </button>
+                    </form>
+            <!-- End of Search Form -->
+            <ul class="mobile-menu mmenu-anim">
+                <li>
+                    <a href="{% url 'store:index' %}">صفحه اصلی</a>
+                </li>
+                <li>
+                    <a href="{% url 'store:index' %}" class="active">دسته بندی</a>
+                    <ul>
+                        <li>
+                            <a href="{% url 'store:index' %}">دسته بندی ها</a>
+                                        <ul>
+                                            <li><a href="{% url 'store:product_by_category' category_id=10 slug="artistic" %}">هنری ها</a></li>
+                                            <li><a href="{% url 'store:product_by_category' category_id=6 slug="household-items" %}">مصارف خانگی</a> </li>
+                                            <li><a href="{% url 'store:product_by_category' category_id=1 slug="household-items" %}">طروف تزئینی</a>  </li>
+                                        </ul>
+                        </li>
+
+
+                    </ul>
+                </li>
+                <li>
+                    <a href="{% url 'store:index' %}">محصولات</a>
+                    <ul>
+                        <li>
+                            <a href="{% url 'store:index' %}">محصولات1</a>
+                                        <ul>
+                                            {% for product in productss|slice:"0:10" %}
+                                            <li><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                        </li>
+                        <li>
+                            <a href="{% url 'store:index' %}">محصولات2</a>
+                                     <ul>
+                                            {% for product in productss|slice:"10:20" %}
+                                            <li><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></li>
+                                            {% endfor %}
+                                     </ul>
+                        </li>
+                        <li>
+                            <a href="{% url 'store:index' %}">محصولات3</a>
+                                       <ul>
+                                            {% for product in productss|slice:"20:" %}
+                                            <li><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">صفحات</a>
+                    <ul>
+                        <li><a href="{% url 'store:contact_us' %}">درباره ما</a></li>
+                        <li><a href="{% url 'account:detail' %}">حساب کاربری</a></li>
+                        <li><a href="{% url 'store:list_favorite' %}">علاقه مندی</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{% url 'blog:blog_detail' 1 %}">وبلاگ</a>
+
+                </li>
+            </ul>
+            <!-- End of MobileMenu -->
+        </div>
+    </div>
+    <!-- newsletter-popup default -->
+    <div class="newsletter-popup rtl newsletter-pop1 mfp-hide" id="newsletter-popup"
+        style="background-image: url({% static 'images/newsletter-popup.jpg' %})">
+        <div class="newsletter-content">
+            <h4 class=" text-dark">اطلاع از <span class="text-primary">تخفیفات</span></h4>
+            <p class="text-grey">جزء اولین کسانی باشید که از تخفیف ها و محصولات جدید ما باخبر می شوند.</p>
+            <form action="{% url 'store:add_email' %}" method="post" class="input-wrapper input-wrapper-inline input-wrapper-round ">
+                {% csrf_token %}
+                <input type="text" class="form-control email rtl" name="email" id="email2"
+                    placeholder="شماره موبایل" required="">
+                <button class="btn btn-dark" type="submit">عضویت</button>
+            </form>
+        </div>
+    </div>
+	<!-- Plugins JS File -->

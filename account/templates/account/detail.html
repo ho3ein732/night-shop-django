@@ -1,0 +1,135 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/god.css' %}">{% endblock %}
+{% block content%}
+            <main class="main account rtl text-right">
+            <nav class="breadcrumb-nav">
+                <div class="container">
+                    <ul class="breadcrumb">
+                        <li><a href="{% url 'store:index' %}"><i class="d-icon-home"></i></a></li>
+                        <li>حساب کاربری</li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="page-content mt-4 mb-10 pb-6">
+                <div class="container">
+                    <h2 class="title title-center mb-10">حساب کاربری</h2>
+                    <div class="tab tab-vertical gutter-lg">
+                        <ul class="nav nav-tabs mb-4 col-lg-3 col-md-4" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link text-right active" href="#dashboard">داشبورد</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-right" href="#orders">سفارشات</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-right " href="#downloads">دانلود</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-right " href="#account">جزئیات  کاربری</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-right" href="login.html">خروج</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content col-lg-9 col-md-8">
+                            <div class="tab-pane active" id="dashboard">
+                                <p class="mb-0">
+                                    سلام  <span>مشتری عزیز</span> (یا  <span>{% if user.is_authenticated %}{{ user.email }}{% else %}کاربر مهمان گرامی{% endif %}</span> / <a href="{% url 'account:logout' %}" class="text-primary">
+                                        خروج
+                                    </a>)
+                                </p>
+                                <p class="mb-8">
+                                    از داشبورد حساب خود می توانید سفارشات اخیر خود را مشاهده کنید.
+                                    <span  class="link-to-tab text-primary">
+                                        آدرس های حمل و نقل و صورتحساب خود را مدیریت کنید،
+                                        <br>و رمز عبور و جزئیات حساب خود را ویرایش کنید.
+                                    </span>
+                                </p>
+                                <a href="{% url 'store:index' %}" class="btn btn-dark btn-rounded">
+                                    رفتن به فروشگاه  <i class="d-icon-arrow-left"></i>
+                                </a>
+                            </div>
+                            <div class="tab-pane" id="orders">
+                                <table class="order-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="pr-2">سفارش</th>
+                                            <th> تاریخ </th>
+                                            <th>وضعیت</th>
+                                            <th>جمع</th>
+                                            <th class="pl-2">اقدامات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for order in orders %}
+                                        <tr>
+                                            <td class="order-number"><a href="#">#{{ order.id }}</a></td>
+                                            <td class="order-date"><span>{{ order.created }}</span></td>
+                                            <td class="order-status"><span>{{ order.status }}</span></td>
+                                            <td class="order-total"><span>{{ order.get_final_cost }} </span></td>
+                                            <td class="order-action">
+                                                <a href="{% url 'cart:order' order.id %}"
+                                                   class="btn btn-primary btn-link btn-underline">نمایش </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane" id="downloads">
+                                <p class="mb-4 text-body">هنوز دانلودی در دسترس نیست.</p>
+                                <a href="{% url 'store:index' %}" class="btn btn-primary btn-link btn-underline">
+                                    لیست محصولات<i class="d-icon-arrow-left"></i>
+                                </a>
+                            </div>
+
+                            <div class="tab-pane" id="account">
+                                <form action="{% url 'account:complete-information' %}" class="form" method="post">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>نام </label>
+                                            <input type="text" class="form-control" name="first_name" required="" {% if user.first_name %}value="{{ user.first_name }}"{% endif %}>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>نام خانوادگی</label>
+                                            <input type="text" class="form-control" name="last_name" required="" {% if user.first_name %}value="{{ user.last_name }}{% endif %}">
+                                        </div>
+                                    </div>
+                                    <label>ایمیل</label>
+                                    <input type="email" class="form-control text-left" name="email" required="" placeholder="ایمیل" value="{{ user.email }}" readonly>
+                                    <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+                                    {% if messages %}
+                                        <ul class="messages">
+                                            {% for message in messages %}
+                                                <li class="{{ message.tags }}">{{ message }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </form>
+                                <form method="post" action="{% url 'account:forget-password' %}">
+                                    {% csrf_token %}
+                                    <fieldset>
+                                        <legend>فراموشی پسورد</legend>
+                                        <label>ایمیل</label>
+                                        <input type="email" class="form-control text-left ltr" name="email">
+
+                                    </fieldset>
+                                    <button type="submit" class="btn btn-primary">ارسال کد</button>
+                                    {% if messages %}
+                                        <ul class="messages">
+                                            {% for message in messages %}
+                                                <li class="{{ message.tags }}">{{ message }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+{% endblock %}
