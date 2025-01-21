@@ -11,6 +11,28 @@
 					<h3 class="title title-simple title-step"><a href="order.html" class="disabled">3. تکمیل خرید</a></h3>
 				</div>
 
+                <div class="card accordion">
+                    <div class="alert alert-light alert-primary alert-icon mb-4 card-header">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span class="text-body">آیا کد تخفیف دارید؟</span>
+                        <a href="#alert-body2" class="text-primary">کد تخفیف خود را اینجا وارد نمایید </a>
+                    </div>
+                    <div class="alert-body collapsed" id="alert-body2">
+                        <p>اگر کد تخفیف دارید، لطفاً آن را در زیر اعمال کنید.</p>
+                        <div class="check-coupon-box d-flex">
+                            <form action="{% url 'store:discount_code' %}" method="post" class="my-discount-form">
+                                {% csrf_token %}
+                                <input type="text" name="copen_code"
+                                       class="input-text form-control text-grey ls-m mr-4 mb-4" id="coupon_code" value=""
+                                       placeholder="کد تخفیف">
+                                <button type="submit" class="btn btn-dark btn-rounded btn-outline mb-4 btn-discount">
+                                        اعمال کد تخفیف
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
 					<form method="post" class="form">
                         {% csrf_token %}
                     <h1>{{ form.errors }}</h1>
@@ -92,7 +114,7 @@
 														<h4 class="summary-subtitle">جمع قبل از تخفیف </h4>
 													</td>
 													<td class="summary-subtotal-price pb-0 pt-0">
-														4,700,000 تومان
+														{{ cart.get_total_price }} تومان
 													</td>
 												</tr>
 												<tr class="sumnary-shipping shipping-row-last">
@@ -122,7 +144,7 @@
 														<h4 class="summary-subtitle">جمع نهایی</h4>
 													</td>
 													<td class=" pt-0 pb-0">
-														<p class="summary-total-price ls-s text-primary">{{ cart.get_total_price }} تومان</p>
+														<p class="summary-total-price ls-s text-primary final-price original-price'" data-final-price="{{ cart.get_final_price }}">{{ cart.get_final_price }} تومان</p>
 													</td>
 												</tr>
 											</tbody>
@@ -161,7 +183,40 @@
 						</div>
                     <span>{{ form.errors }}</span>
 					</form>
-				</div>
-			</div>
+            </div>
 		</main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('.my-discount-form').submit(function(e){
+            e.preventDefault();
+            var MyForm = $(this)
+            var MyData = MyForm.serialize()
+            var Order_total = $('.final-price').data('final-price')
+
+            MyData += '&order_total='+Order_total;
+
+            $.ajax({
+               url: '{% url "store:discount_code" %}',
+                data: MyData,
+                method: 'POST',
+                success: function (data) {
+                   if (data.success) {
+                       var TotalPrice = data.total32
+                       var apply = 'کد با موفقیت اعمال شد'
+                       $('.final-price').text(TotalPrice);
+                       $('.btn-discount').text(apply)
+                   }else{
+                       var accepted = 'کد تخفیف منقضی شده است'
+                       $('.btn-discount').text(accepted)
+                   }
+                },
+                error: function (error) {
+                    console.log(error)
+                },
+            });
+        });
+    });
+    </script>
 {% endblock %}

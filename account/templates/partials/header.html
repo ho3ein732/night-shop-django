@@ -146,11 +146,13 @@
                                 <div class="row">
                                     <div class="col-6 col-sm-4 col-md-4 col-lg-3">
                                         <h4 class="menu-title">دسته بندی ها</h4>
-                                        <ul>
-                                            <li><a href="{% url 'store:product_by_category' category_id=10 slug="artistic" %}">هنری ها</a></li>
-                                            <li><a href="{% url 'store:product_by_category' category_id=6 slug="household-items" %}">مصارف خانگی</a> </li>
-                                            <li><a href="{% url 'store:product_by_category' category_id=1 slug="household-items" %}">طروف تزئینی</a>  </li>
-                                        </ul>
+<ul>
+    <li><a href="{% url 'store:product_by_category' category_id=10 slug='artistic' %}">هنری ها</a></li>
+    <li><a href="{% url 'store:product_by_category' category_id=6 slug='household-items' %}">مصارف خانگی</a></li>
+    <li><a href="{% url 'store:product_by_category' category_id=1 slug='household-items' %}">طروف تزئینی</a></li>
+    <li><a href="{% url 'store:product_by_category' category_id=1 slug='None' %}">همه ی محصولات</a></li>
+</ul>
+
                                     </div>
                                     <div class="col-6 col-sm-4 col-md-4 col-lg-3">
                                         <h4 class="menu-title">-</h4>
@@ -187,8 +189,6 @@
 {#                                        </div>#}
                                     </div>
                                     <!-- End Megamenu -->
-
-
                                 </div>
                             </div>
                         </li>
@@ -197,23 +197,23 @@
                             <div class="megamenu">
                                 <div class="row">
                                     <div class="col-6 col-sm-4 col-md-3">
-                                        <h4 class="menu-title">محصولات1</h4>
+                                        <h4 class="menu-title">جدیدترین محصولات</h4>
                                         <ul>
-                                            {% for product in productss|slice:"0:10" %}
+                                            {% for product in new_product|slice:"0:10" %}
                                             <li><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></li>
                                             {% endfor %}
                                         </ul>
                                     </div>
                                     <div class="col-6 col-sm-4 col-md-3">
-                                        <h4 class="menu-title">محصولات2</h4>
+                                        <h4 class="menu-title">پر فروش ترین محصولات</h4>
                                         <ul>
-                                            {% for product in productss|slice:"10:20" %}
+                                            {% for product in top_sell|slice:"10:20" %}
                                             <li><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></li>
                                             {% endfor %}
                                         </ul>
                                     </div>
                                     <div class="col-6 col-sm-4 col-md-3">
-                                        <h4 class="menu-title">محصولات3</h4>
+                                        <h4 class="menu-title">همه ی محصولات</h4>
                                         <ul>
                                             {% for product in productss|slice:"20:" %}
                                             <li><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></li>
@@ -225,7 +225,6 @@
                                             <img src="{% static 'images/myshop-ai.jpg' %}" alt="Menu banner" width="221"
                                                  height="330" />
                                         </figure>
-
                                     </div>
                                     <!-- End MegaMenu -->
                                 </div>

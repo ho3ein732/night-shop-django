@@ -9,7 +9,11 @@ from .models import (
     Tag,
     Review,
     ContactUs,
-    Emails
+    Emails,
+    Copen,
+    UserCopenUsage,
+    Banner,
+    BannerImage
 )
 
 
@@ -80,3 +84,38 @@ class ContactUsAdmin(admin.ModelAdmin):
 class EmailsAdmin(admin.ModelAdmin):
     list_display = ['email']
 
+
+@admin.register(Copen)
+class CopenAdmin(admin.ModelAdmin):
+    list_display = ('code', 'discount_percent', 'status', 'expiration_date', 'created_at')
+    search_fields = ('code',)
+    list_filter = ('status', 'expiration_date')
+
+
+@admin.register(UserCopenUsage)
+class UserCopenUsageAdmin(admin.ModelAdmin):
+    list_display = ('user', 'copen', 'created_at')
+    search_fields = ('user__username', 'copen__code')
+
+
+class BannerImageInline(admin.TabularInline):
+    model = BannerImage
+    extra = 1
+    verbose_name = "تصویر بنر"
+    verbose_name_plural = "تصاویر بنر"
+
+
+@admin.register(Banner)
+class BannerAdmin(admin.ModelAdmin):
+    list_display = ('title', 'status', 'position', 'created_at')
+    list_filter = ('status', 'position', 'created_at')
+    search_fields = ('title', 'short_description', 'status', 'position')
+    ordering = ('-created_at',)
+    inlines = [BannerImageInline]
+    readonly_fields = ('created_at',)
+
+
+@admin.register(BannerImage)
+class BannerImageAdmin(admin.ModelAdmin):
+    list_display = ('title', 'short_description')
+    search_fields = ('title', 'short_description')

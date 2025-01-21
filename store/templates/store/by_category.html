@@ -40,7 +40,7 @@
                                             <ul class="widget-body filter-items search-ul">
                                                 <li>
                                                     {% for cate in categories %}
-                                                        <a href="{% url 'store:product_by_category' category_id=category.id slug=category.slug %}" {% if category and category.id == cate.id %}class="active"{% endif %}>
+                                                        <a href="{% url 'store:product_by_category' category_id=cate.id slug=cate.slug %}" {% if category and category.id == cate.id %}class="active"{% endif %}>
                                                             {{ cate.name }}
                                                         </a>
                                                     {% endfor %}
@@ -66,7 +66,7 @@
                                     </div>
                                 </nav>
                                 <div class="row cols-2 cols-sm-3 product-wrapper">
-                                    {% for product in products %}
+                                    {% for product in page_obj %}
                                         <div class="product-wrap">
                                             <div class="product">
                                                 <figure class="product-media">

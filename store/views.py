@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import now
 from django.views.generic import ListView
-from .models import Product, Category, ProductFeatureName, Review, FavoriteProduct
+from .models import Product, Category, ProductFeatureName, Review, FavoriteProduct, Copen, UserCopenUsage, Banner
 from django.contrib.auth.decorators import login_required
 from blog.models import BlogPost
 from .forms import SearchForm, ContactUsForm, EmailForm
@@ -38,11 +38,15 @@ class Index(ListView):
         context['price'] = Product.objects.order_by('-price')[:3]
         context['off'] = Product.objects.order_by('-discount')[:3]
         context['blogs'] = BlogPost.objects.filter(status='published')
+        context['categories'] = Category.objects.filter(parent__isnull=True)
+        context['top_banners'] = Banner.objects.filter(status=True, position='top')
+        context['middle_banners'] = Banner.objects.filter(status=True, position='middle')
+        context['button_banners'] = Banner.objects.filter(status=True, position='button')
         return context
 
 
 def product_by_category(request, category_id, slug):
-    if category_id == 1000000 and slug == 'all':
+    if slug == 'None':
 
         products = Product.objects.all()
         category = None
@@ -56,7 +60,7 @@ def product_by_category(request, category_id, slug):
 
     # endregion
     categories = Category.objects.filter(parent__isnull=True)
-    paginator = Paginator(products, 12)
+    paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -180,3 +184,38 @@ def emails(request):
     else:
         form = EmailForm()
     return render(request, 'partials/footer.html', {'form': form})
+
+
+def apply_copen(request):
+    if request.method == 'POST':
+        copen_code = request.POST.get('copen_code')
+        order_total = int(request.POST.get('order_total'))
+        if not copen_code or not order_total:
+            return JsonResponse({'success': False, 'message': 'کد منقضی شده است'})
+
+        user = request.user
+        try:
+            copen = Copen.objects.get(code=copen_code, )
+        except Copen.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'کد منقضی شده است'})
+
+        if not copen:
+            return JsonResponse({'success': False, 'message': 'کد منقضی شده است'})
+        if copen.is_valid:
+            discount = (order_total * copen.discount_percent) // 100
+            total = order_total - discount
+
+            UserCopenUsage.objects.create(
+                user=user, copen=copen
+            )
+
+            return JsonResponse({
+                'total32': total,
+                'discount': discount,
+                'success': True
+            })
+        else:
+            return JsonResponse({'success': False, 'message': 'کد تخفیف نا معتبر است'})
+    return JsonResponse({'success': False, 'message': 'کد نامعتبر است'})
+
+

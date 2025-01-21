@@ -22,6 +22,8 @@ class Category(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Created At')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Updated At')
 
+    file = ResizedImageField(verbose_name='عکس ها', upload_to='images/', force_format='PNG', quality=100, blank=True)
+
     def __str__(self):
         return f'category {self.name}'
 
@@ -199,3 +201,70 @@ class ContactUs(models.Model):
 
 class Emails(models.Model):
     email = models.EmailField()
+
+
+class Copen(models.Model):
+    code = models.CharField(max_length=20, unique=True)
+    discount_percent = models.PositiveIntegerField()
+    max_uses = models.PositiveIntegerField(default=1)
+    min_order_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    expiration_date = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    published = models.DateTimeField(auto_now=True)
+    status = models.BooleanField(default=False)
+
+    def is_valid(self, user, total_price):
+        if not self.status or now() > self.expiration_date:
+            return False
+        if UserCopenUsage.objects.filter(user=user, copen=self).count() > self.max_uses:
+            return False
+        return True
+
+
+class UserCopenUsage(models.Model):
+    user = models.ForeignKey(NightUser, on_delete=models.CASCADE)
+    copen = models.ForeignKey(Copen, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Banner(models.Model):
+    POSITION_CHOICES = [
+        ('top', 'بالا'),
+        ('middle', 'وسط'),
+        ('button', 'پایین')
+    ]
+
+    title = models.CharField(max_length=55, verbose_name='عنوان')
+    short_description = models.CharField(max_length=55,verbose_name='توضیح مختصر')
+    status = models.BooleanField(default=False, verbose_name='وضیعت')
+    position = models.CharField(choices=POSITION_CHOICES, max_length=25, default='top', verbose_name='مکان بنر')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.title}'
+
+    class Meta:
+        ordering = ['-created_at']
+
+        indexes = [
+            models.Index(fields=['status']),
+            models.Index(fields=['position'])
+        ]
+
+        verbose_name = 'بنر'
+        verbose_name_plural = 'بنر ها'
+
+
+class BannerImage(models.Model):
+    title = models.CharField(max_length=25, blank=True, null=True, verbose_name='عنوان بنر')
+    short_description = models.CharField(max_length=55, blank=True, null=True, verbose_name='توضیحات مختصر بنر')
+    file = ResizedImageField(verbose_name='', upload_to='images/', force_format='PNG', quality=100)
+    banner = models.ForeignKey(Banner, related_name='images', on_delete=models.CASCADE, verbose_name='بنر')
+
+    def __str__(self):
+        return f'{self.title}'
+
+    class Meta:
+        verbose_name = 'تصویر بنر'
+        verbose_name_plural = 'تصویر های بنر'

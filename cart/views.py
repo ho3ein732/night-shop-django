@@ -101,7 +101,7 @@ def add_address(request):
             address = form.save(commit=False)
             address.user = request.user
             address.save()
-    # endregion
+            # endregion
             # region create Order
             order = Order.objects.create(
                 buyer=request.user,
@@ -111,6 +111,8 @@ def add_address(request):
 
             # region create Order Item
             cart = Cart(request)
+            if not cart:
+                return JsonResponse({'success': False, 'message': 'سبد خرید خالی است'})
             for item in cart:
                 OrderItem.objects.create(
                     orders=order,
@@ -119,6 +121,15 @@ def add_address(request):
                     quantity=item['quantity'],
                     weight=item['weight'],
                 )
+
+                product = item['product']
+                quantity = item['quantity']
+                if product.inventory > quantity:
+                    product.inventory -= quantity
+                    product.sell += quantity
+                    product.save()
+                else:
+                    return JsonResponse({'success': False, 'message': 'موجودی ناکافی'})
             # endregion
             cart.clear()
             return redirect('cart:order', order_id=order.id)

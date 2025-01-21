@@ -4,8 +4,6 @@
     <link rel="stylesheet" href="{% static 'css/god.css' %}">{% endblock %}
 {% block content %}
 
-
-
             <main class="main rtl text-right">
             <div class="page-content">
                 <section class="intro-section ltr">
@@ -18,31 +16,29 @@
                         'autoplay': false,
                         'autoplayTimeout': 8000
                     }">
-                        <div class="banner banner-fixed intro-slide1">
-                            <figure>
-                                <img src="{% static 'images/خدایااا.jpg' %}" alt="intro-banner" class="banner-image" />
-                            </figure>
-                            <div class="container">
-                                <div class="banner-content y-50 text-right rtl">
-                                    <h4 class="banner-subtitle font-weight-bold ls-l">
-                                        <span class="d-inline-block slide-animate"
-                                              data-animation-options="{'name': 'fadeInRightShorter', 'duration': '1s', 'delay': '.2s'}">یکی بخرید</span>
-                                        <span class="d-inline-block label-star bg-white text-primary slide-animate"
-                                              data-animation-options="{'name': 'fadeInRightShorter', 'duration': '1s', 'delay': '.4s'}">2 تا ببرید</span>
-                                    </h4>
-                                    <h2 class="banner-title font-weight-bold text-white lh-1 ls-md slide-animate"
-                                        data-animation-options="{'name': 'fadeInUpShorter', 'duration': '1.2s', 'delay': '1s'}">
-                                        حراج آخر فصل
-                                    </h2>
-                                    <p class="slide-animate text-white ls-s mb-7"
-                                       data-animation-options="{'name': 'fadeInUpShorter', 'duration': '1.2s', 'delay': '1s'}">
-                                        تمام سفارش های بالای 300 هزار تومان رایگان ارسال می شوند
-                                    </p>
+                    {% if top_banners %}
+                        {% for ban in top_banners %}
+                            <div class="banner banner-fixed intro-slide{{ forloop.counter }}" style="background-color: #9f7b2f">
+                                <figure>
+                                    <img src="{{ ban.images.first.file.url }}" alt="intro-banner" class="banner-image" />
+                                </figure>
+                                <div class="container">
+                                    <div class="banner-content y-50 text-right rtl">
 
+                                        <h2 class="banner-title font-weight-bold text-white lh-1 ls-md slide-animate"
+                                            data-animation-options="{'name': 'fadeInUpShorter', 'duration': '1.2s', 'delay': '1s'}">
+                                            {{ ban.title }}
+                                        </h2>
+                                        <p class="slide-animate text-white ls-s mb-7"
+                                           data-animation-options="{'name': 'fadeInUpShorter', 'duration': '1.2s', 'delay': '1s'}">
+                                            {{ ban.short_description}}
+                                        </p>
+
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
+                        {% endfor %}
+                    {% endif %}
                     </div>
                     <div class="container mt-6 appear-animate">
                         <div class="service-list">
@@ -114,50 +110,25 @@
                     <div class="container">
                         <h2 class="title title-center mb-5">به دنبال چه چیزی می گردید؟</h2>
                         <div class="row">
+                            {% for cate in categories %}
                             <div class="col-xs-6 col-lg-3 mb-4">
                                 <div class="category category-default1 category-absolute banner-radius overlay-zoom">
-                                    <a href="{% url 'store:product_by_category' category_id=1 slug='decorative' %}">
+                                    <a href="{% url 'store:product_by_category' cate.id cate.slug %}">
                                         <figure class="category-media">
-                                            <img src="{% static 'images/shop/taziin.jpg' %}" alt="category" width="280"
+                                            <img src="{{ cate.file.url }}" alt="category" width="280"
                                                  height="280" style="background-color: #8c8c8d;" />
                                         </figure>
                                     </a>
                                     <div class="category-content rtl">
-                                        <h4 class="category-name font-weight-bold "><a href="{% url 'store:product_by_category' category_id=1 slug='decorative' %}">تزئینی</a></h4>
+                                        <h4 class="category-name font-weight-bold "><a href="{% url 'store:product_by_category' cate.id cate.slug %}">{{ cate.name }}</a></h4>
                                     </div>
                                 </div>
                             </div>
+                            {% endfor %}
+
                             <div class="col-xs-6 col-lg-3 mb-4">
                                 <div class="category category-default1 category-absolute banner-radius overlay-zoom">
-                                    <a href="{% url 'store:product_by_category' category_id=10 slug='artistic' %}">
-                                        <figure class="category-media">
-                                            <img src="{% static 'images/shop/honar.jpg' %}" alt="category" width="280"
-                                                 height="280" style="background-color: #bcbdb7;" />
-                                        </figure>
-                                    </a>
-                                    <div class="category-content rtl">
-                                        <h4 class="category-name font-weight-bold ">
-                                            <a href="{% url 'store:product_by_category' category_id=10 slug='artistic' %}">هنری</a>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-lg-3 mb-4">
-                                <div class="category category-default1 category-absolute banner-radius overlay-zoom">
-                                    <a href="{% url 'store:product_by_category' category_id=6 slug='household-items' %}">
-                                        <figure class="category-media">
-                                            <img src="{% static 'images/shop/hom.jpg' %}" alt="category" width="280"
-                                                 height="280" style="background-color: #ececef;" />
-                                        </figure>
-                                    </a>
-                                    <div class="category-content rtl">
-                                        <h4 class="category-name font-weight-bold "><a href="{% url 'store:product_by_category' category_id=6 slug='household-items' %}">مصارف خانگی</a></h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-lg-3 mb-4">
-                                <div class="category category-default1 category-absolute banner-radius overlay-zoom">
-                                    <a href="{% url 'store:product_by_category' category_id=1000000 slug='all' %}">
+                                    <a href="{% url 'store:product_by_category' category_id=1 slug='None' %}">
                                         <figure class="category-media">
                                             <img src="{% static 'images/shop/all.jpg' %}" alt="category" width="280"
                                                  height="280" style="background-color: #e8eded;" />
@@ -165,7 +136,7 @@
                                     </a>
                                     <div class="category-content font-weight-bold">
                                         <h4 class="category-name font-weight-bold ">
-                                            <a href="{% url 'store:product_by_category' category_id=1000000 slug='all' %}">همه ی محصولات</a>
+                                            <a href="{% url 'store:product_by_category' category_id=1 slug='None' %}">همه ی محصولات</a>
                                         </h4>
                                     </div>
                                 </div>
@@ -173,6 +144,34 @@
                         </div>
                     </div>
                 </section>
+
+
+                {% if middle_banners %}
+                    {% for ban in middle_banners %}
+
+                        <div class="banner banner-fixed intro-slide1" style="background-color: #9f7b2f">
+                            <figure>
+                                    <img src="{{ ban.images.first.file.url }}" alt="intro-banner" class="banner-image" />
+                            </figure>
+                            <div class="container">
+                                <div class="banner-content y-50 text-right rtl">
+                                    <h2 class="banner-title font-weight-bold text-white lh-1 ls-md slide-animate"
+                                            data-animation-options="{'name': 'fadeInUpShorter', 'duration': '1.2s', 'delay': '1s'}">
+                                        {{ ban.title }}
+                                    </h2>
+                                    <p class="slide-animate text-white ls-s mb-7"
+                                           data-animation-options="{'name': 'fadeInUpShorter', 'duration': '1.2s', 'delay': '1s'}">
+                                            {{ ban.short_description}}
+                                    </p>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    {% endfor %}
+                {% endif %}
+
+
 
 <section class="product-wrapper container appear-animate mt-6 mt-md-10 pt-4 pb-8" data-animation-options="{'delay': '.3s'}">
     <h2 class="title title-center mb-5">پرفروش‌ترین‌ها</h2>
@@ -450,6 +449,30 @@
                     </div>
                 </section>
             </div>
+
+                                {% if button_banners %}
+                        {% for ban in button_banners %}
+                            <div class="banner banner-fixed intro-slide1">
+                                <figure>
+                                    <img src="{{ ban.images.first.file.url }}" alt="intro-banner" class="banner-image" />
+                                </figure>
+                                <div class="container">
+                                    <div class="banner-content y-50 text-right rtl">
+                                        <h2 class="banner-title font-weight-bold text-white lh-1 ls-md slide-animate"
+                                            data-animation-options="{'name': 'fadeInUpShorter', 'duration': '1.2s', 'delay': '1s'}">
+                                            {{ ban.title }}
+                                        </h2>
+                                        <p class="slide-animate text-white ls-s mb-7"
+                                           data-animation-options="{'name': 'fadeInUpShorter', 'duration': '1.2s', 'delay': '1s'}">
+                                            {{ ban.short_description}}
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
         </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
@@ -505,7 +528,7 @@
                     }
                 },
                 error: function (xhr) {
-                    console.log("خطایی رخ داده است.");
+                    console.log("خطایی رخ داده است." + xhr);
                 }
             });
         });

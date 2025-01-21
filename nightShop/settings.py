@@ -70,6 +70,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'cart.context_processor.cart',
                 'cart.context_processor.productss',
+                'cart.context_processor.top_sell',
+                'cart.context_processor.new_product'
             ],
         },
     },
