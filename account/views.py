@@ -179,7 +179,7 @@ def verifi_token_forget_password(request):
                 if user:
                     login(request, user)
                     messages.success(request, 'رمز عبور با موفقیت تغییر کرد')
-                    return redirect('cart:order')
+                    return redirect('store:index')
                 else:
                     messages.error(request, 'مشکلی در ورود!')
     else:
@@ -187,3 +187,25 @@ def verifi_token_forget_password(request):
     return render(request, 'account/confirm.html', {'form': form})
 
 
+def forget_master_password(request):
+    if request.method == 'POST':
+        form = ForgetForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            if not NightUser.objects.filter(email=email).exists():
+                messages.error(request, 'همیچین ایمیلی وجود ندارد')
+            else:
+                token = ''.join(random.choices('1234567890abcdefghijklmnopqrstuvwxy', k=6))
+                cache.set(email, token, timeout=301)
+                sendMail(email, token)
+                request.session['email'] = email
+                messages.success(request, 'ایمیل خود را برسی کنید')
+                print(token)  # check
+                return redirect('account:confirm-password-change')
+
+        else:
+            messages.error(request, 'فرم مشکل دارد!')
+    else:
+        form = ForgetForm()
+
+    return render(request, 'forms/forget_pass.html', {'form': form})

@@ -8,8 +8,8 @@
     <nav class="breadcrumb-nav">
         <div class="container">
             <ul class="breadcrumb">
-                <li><a href="demo1.html"><i class="d-icon-home"></i></a></li>
-                <li><a href="shop.html">فروشگاه</a></li>
+                <li><a href="{% url 'store:index' %}"><i class="d-icon-home"></i></a></li>
+                <li><a href="{% url 'store:index' %}">فروشگاه</a></li>
                 <li>حساب کاربری</li>
             </ul>
         </div>
@@ -43,13 +43,13 @@
                                                 <div class="field button-field">
                                                     <button class="btn btn-dark btn-block btn-rounded" type="submit">ورود</button>
                                                 </div>
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li class="{{ message.tags }}">{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+                                                {% if messages %}
+                                                    <ul class="messages">
+                                                        {% for message in messages %}
+                                                            <li class="{{ message.tags }}">{{ message }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% endif %}
 
 
                                             </form>
@@ -57,7 +57,8 @@
                                     </div>
                                 </div>
                                 <div class="form-choice text-center">
-                                    <label class="ls-m">یا وارد شوید با</label>
+                                    <label class="ls-m"><a href="{% url 'account:register' %}">ایا حساب کاربری ندارید؟ثبت نام کنید</a></label>
+                                    <label class="ls-m"><a href="{% url 'account:forget-master-master' %}">رمز عبور خود را فراموش کردید؟</a></label>
                                     <div class="social-links">
                                         <a href="#" class="social-link social-google fab fa-google border-no disabled"></a>
                                         <a href="#" class="social-link social-facebook fab fa-facebook-f border-no disabled"></a>

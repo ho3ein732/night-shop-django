@@ -130,6 +130,7 @@ def search(request):
     return render(request, 'store/search.html', {'products': products})
 
 
+@login_required
 def add_to_favorite(request, id):
     saved = None
     product = Product.objects.get(id=id)
@@ -149,12 +150,14 @@ def add_to_favorite(request, id):
     return JsonResponse({'success': True, 'saved': saved, 'favorite_count': favorite_count})
 
 
+@login_required
 def list_favorite(request):
     user = request.user
     products = FavoriteProduct.objects.filter(user=user)
     return render(request, 'store/list_favorite.html', {'products': products})
 
 
+@login_required
 def remove_favorite(request, id):
     if request.method == 'POST':
         favorite = get_object_or_404(FavoriteProduct, user=request.user, product_id=id)
@@ -222,5 +225,3 @@ def apply_copen(request):
         else:
             return JsonResponse({'success': False, 'message': 'کد تخفیف نا معتبر است'})
     return JsonResponse({'success': False, 'message': 'کد نامعتبر است'})
-
-

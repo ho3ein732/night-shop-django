@@ -1,0 +1,26 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+
+{% block title %}forget password{% endblock %}
+
+    {% block content %}
+
+        <form method="post" action="{% url 'account:forget-password' %}">
+        {% csrf_token %}
+        <fieldset>
+            <legend>فراموشی پسورد</legend>
+            <label>ایمیل</label>
+            <input type="email" class="form-control text-left ltr" name="email">
+
+        </fieldset>
+        <button type="submit" class="btn btn-primary">ارسال کد</button>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </form>
+
+    {% endblock %}

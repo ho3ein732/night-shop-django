@@ -1,3 +1,5 @@
+from django.contrib.auth.models import AnonymousUser
+
 from .cart import Cart
 from store.models import Product, FavoriteProduct
 
@@ -19,5 +21,8 @@ def top_sell(request):
 
 
 def number_favorite(request):
+    if isinstance(request.user, AnonymousUser):
+        return {'number_favorite': 0}
+
     favorites = FavoriteProduct.objects.filter(user=request.user).count()
     return {'number_favorite': favorites}
