@@ -180,7 +180,9 @@
                 success: function (data) {
                     // به‌روزرسانی سبد خرید
                     $('.reload').load(location.href + " .reload");
-                    $('.price-total-1').text(data.total_price)
+                    $('.price-total-1').text(data.total_price);
+                    $('.my-price').text(data.total_price);
+                    $('.my-item-count').text(data.item_count);
                 },
                 error: function (xhr) {
                     var response = JSON.parse(xhr.responseText);
@@ -205,7 +207,9 @@
                 success: function (data) {
                     if (data.success) {
                         button.closest('.product').remove();
-                        $('.price-total-1').text(data.total_price)
+                        $('.price-total-1').text(data.total_price);
+                        $('.my-price').text(data.total_price);
+                        $('.my-item-count').text(data.item_count);
 
 
                         if (data.item_count === 0) {
@@ -227,8 +231,9 @@
             $.ajax({
                url: '{% url 'store:add_to-favorite' 0 %}'.replace('0', product_id),
                 data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
-                success: function () {
-                   console.log('success')
+                success: function (data) {
+                   console.log('success');
+                   $('.my-wishlist-heart').text(data.favorite_count)
                 },
                 error: function (error) {
                    console.log(error)

@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from blog.models import BlogPost
 from .forms import SearchForm, ContactUsForm, EmailForm
 from django.db.models import Q
+from cart.cart import Cart
 
 
 # Create your views here.
@@ -42,6 +43,8 @@ class Index(ListView):
         context['top_banners'] = Banner.objects.filter(status=True, position='top')
         context['middle_banners'] = Banner.objects.filter(status=True, position='middle')
         context['button_banners'] = Banner.objects.filter(status=True, position='button')
+        cart = Cart(request=self.request)
+        context['my_price'] = cart.get_total_price()
         return context
 
 
@@ -135,14 +138,15 @@ def add_to_favorite(request, id):
         return JsonResponse({'error': 'محصول پیدا نشد'})
 
     favorite = FavoriteProduct.objects.filter(user=request.user, product=product).first()
-
     if favorite:
         saved = False
         favorite.delete()
     else:
         FavoriteProduct.objects.create(user=request.user, product=product)
 
-    return JsonResponse({'success': True, 'saved': saved})
+    favorite_count = FavoriteProduct.objects.filter(user=request.user).count()
+
+    return JsonResponse({'success': True, 'saved': saved, 'favorite_count': favorite_count})
 
 
 def list_favorite(request):
@@ -155,7 +159,8 @@ def remove_favorite(request, id):
     if request.method == 'POST':
         favorite = get_object_or_404(FavoriteProduct, user=request.user, product_id=id)
         favorite.delete()
-        return JsonResponse({'success': True, 'message': 'محصول با موفقیت حذف شد'})
+        favorite_count = FavoriteProduct.objects.filter(user=request.user).count()
+        return JsonResponse({'success': True, 'message': 'محصول با موفقیت حذف شد', 'favorite_count': favorite_count})
     return JsonResponse({'success': False, 'error': 'درخواست نامعتبر یا کاربر احراز هویت نشده است'})
 
 

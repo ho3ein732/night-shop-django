@@ -58,10 +58,14 @@
         </div>
     </a>
     <span class="divider"></span>
-    <div class="wishlist">
-        <a href="{% url 'store:list_favorite' %}" class="wishlist-toggle">
-            <i class="d-icon-heart"></i>
-        </a>
+<div class="wishlist">
+    <a href="{% url 'store:list_favorite' %}" class="wishlist-toggle">
+        <i class="d-icon-heart" style="position: relative;">
+            <span class="cart-count my-wishlist-heart" style="position: absolute; top: -10px; right: -10px; background-color: red; color: white; border-radius: 50%; padding: 5px; min-width: 20px; text-align: center; font-size: 12px;">{{ number_favorite }}</span>
+        </i>
+    </a>
+
+
         <div class="canvas-overlay"></div>
         <div class="dropdown-box scrollable">
             <div class="canvas-header">
@@ -81,8 +85,9 @@
         <a href="#" class="cart-toggle label-block link">
             <div class="cart-label d-lg-show">
                 <span class="cart-name">سبد خرید:</span>
+                <span class="cart-price my-price">{{ cart.get_total_price }}تومـان</span>
             </div>
-            <i class="d-icon-bag"></i> <!-- نمایش تعداد اقلام سبد خرید -->
+            <i class="d-icon-bag"><span class="cart-count my-item-count">{{ cart|length }}</span></i>
         </a>
         <div class="canvas-overlay"></div>
         <div class="dropdown-box">

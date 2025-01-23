@@ -52,7 +52,7 @@ def remove_item(request):
             if product_id:
                 product = get_object_or_404(Product, id=product_id)
                 cart.remove(product)
-                return JsonResponse({'success': True, 'total_price': cart.get_total_price()})
+                return JsonResponse({'success': True, 'total_price': cart.get_total_price(), 'item_count': len(cart)})
         except Exception as e:
             return JsonResponse({'error': str(e)})
     return JsonResponse({'error': 'Invalid request method'})

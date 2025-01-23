@@ -1,5 +1,5 @@
 from .cart import Cart
-from store.models import Product
+from store.models import Product, FavoriteProduct
 
 
 def cart(request):
@@ -16,3 +16,8 @@ def new_product(request):
 
 def top_sell(request):
     return {'top_sell': Product.objects.all().order_by('-sell')}
+
+
+def number_favorite(request):
+    favorites = FavoriteProduct.objects.filter(user=request.user).count()
+    return {'number_favorite': favorites}
