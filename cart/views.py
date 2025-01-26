@@ -7,6 +7,14 @@ from store.models import Product
 from .forms import InvoiceForm
 from .models import Order, OrderItem
 
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+import requests
+import logging
+
 
 # Create your views here.
 
@@ -92,55 +100,108 @@ def update_quantity(request):
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 
-@login_required
+logger = logging.getLogger(__name__)
+
+
 def add_address(request):
-    # region add address
     if request.method == "POST":
         form = InvoiceForm(request.POST)
         if form.is_valid():
             address = form.save(commit=False)
             address.user = request.user
             address.save()
-            # endregion
-            # region create Order
-            order = Order.objects.create(
-                buyer=request.user,
-                address=address,
-            )
-            # endregion
 
-            # region create Order Item
             cart = Cart(request)
-            if not cart:
-                return JsonResponse({'success': False, 'message': 'سبد خرید خالی است'})
-            for item in cart:
-                OrderItem.objects.create(
-                    orders=order,
-                    product=item['product'],
-                    price=item['price'],
-                    quantity=item['quantity'],
-                    weight=item['weight'],
-                )
 
-                product = item['product']
-                quantity = item['quantity']
-                if product.inventory > quantity:
-                    product.inventory -= quantity
-                    product.sell += quantity
-                    product.save()
+            description = ''
+            for item in cart:
+                description += str(item['product'].name) + ', '
+
+            data = {
+                "merchant_id": settings.MERCHANT,
+                "amount": cart.get_final_price(),
+                "callback_url": settings.ZARINPAL_CALLBACK_URL,
+                "description": description,
+            }
+            headers = {"Content-Type": "application/json"}
+
+            try:
+                response = requests.post(settings.ZARINPAL_REQUEST_URL, json=data, headers=headers)
+                response_data = response.json()
+                print(response_data)  # چاپ پاسخ برای بررسی جزئیات
+
+                if response_data.get('data') and response_data['data']['code'] == 100:
+                    return redirect(f"https://sandbox.zarinpal.com/pg/StartPay/{response_data['data']['authority']}")
                 else:
-                    return JsonResponse({'success': False, 'message': 'موجودی ناکافی'})
-            # endregion
-            cart.clear()
-            return redirect('cart:order', order_id=order.id)
-        else:
-            print(form.errors)
+                    return JsonResponse({'success': False, 'message': f"خطا در درخواست پرداخت: {response_data.get('errors', 'جزئیات خطا موجود نیست')}"})
+            except Exception as e:
+                return JsonResponse({'success': False, 'message': f"خطا در ارسال درخواست: {e}"})
+
     else:
         form = InvoiceForm()
 
     return render(request, 'cart/invoice.html', {'form': form})
 
 
+@login_required
 def order(request, order_id):
-    orders = get_object_or_404(Order, pk=order_id, buyer=request.user)
+    orders = get_object_or_404(Order, pk=order_id, buyer=request.user, paid=True)
     return render(request, 'cart/order.html', {'orders': orders})
+
+
+@csrf_exempt
+def verify(request):
+    print(40 * '_____')
+    authority = request.GET.get('Authority')
+    status = request.GET.get('Status')
+
+    if not authority or not status:
+        return HttpResponse("درخواست نامعتبر است.")
+
+    if status == 'OK':
+        cart = Cart(request)
+        data = {
+            "merchant_id": settings.MERCHANT,
+            "amount": cart.get_final_price(),  # مطمئن شوید مبلغ درست استفاده می‌شود
+            "authority": authority,
+        }
+        headers = {"Content-Type": "application/json"}
+
+        try:
+            response = requests.post(settings.ZARINPAL_VERIFY_URL, json=data, headers=headers)
+            response_data = response.json()
+
+            if response_data.get('data') and response_data['data']['code'] == 100:
+                order = Order.objects.create(
+                    buyer=request.user,
+                    address=request.user.addresses.last(),
+                    paid=True
+                )
+
+                for item in cart:
+                    OrderItem.objects.create(
+                        orders=order,
+                        product=item['product'],
+                        price=item['price'],
+                        quantity=item['quantity'],
+                        weight=item['weight']
+                    )
+
+                    product = item['product']
+                    quantity = item['quantity']
+
+                    if product.inventory > quantity:
+                        product.inventory -= quantity
+                        product.sell += quantity
+                        product.save()
+                    else:
+                        return render(request, 'cart/order.html', {'success': False, 'message': 'موجودی ناکافی'})
+
+                cart.clear()  # پاک کردن سبد خرید
+                return render(request, 'cart/order.html', {'success': True, 'message': f"پرداخت موفق! شماره تراکنش: {response_data['data']['ref_id']}", 'orders': order})
+            else:
+                return render(request, 'cart/order.html', {'success': False, 'message': 'خطا در تایید پرداخت'})
+        except Exception as e:
+            return render(request, 'cart/order.html', {'success': False, 'message': "خطا در تایید پرداخت"})
+    else:
+        return render(request, 'cart/order.html', {'success': False, 'message': "پرداخت توسط کاربر لغو شد."})

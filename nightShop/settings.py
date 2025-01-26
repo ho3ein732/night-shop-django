@@ -157,3 +157,12 @@ DJANGORESIZED_DEFAULT_FORCE_FORMAT = 'JPEG'
 DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'JPEG': ".jpg"}
 DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
 # end django-resized
+
+
+# settings.py
+
+# zarinpal
+MERCHANT = '00000000-0000-0000-0000-000000000000'
+ZARINPAL_REQUEST_URL = "https://sandbox.zarinpal.com/pg/v4/payment/request.json"
+ZARINPAL_VERIFY_URL = "https://sandbox.zarinpal.com/pg/v4/payment/verify.json"
+ZARINPAL_CALLBACK_URL = 'http://127.0.0.1:8000/cart/verify/'

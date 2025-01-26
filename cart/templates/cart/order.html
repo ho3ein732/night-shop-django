@@ -28,6 +28,7 @@
 									</g>
 								</svg>
 							</div>
+                            {% if orders %}
 							<div class="icon-box-content text-right">
 								<h5 class="icon-box-title font-weight-bold lh-1 mb-1">متشکریم از خرید شما!</h5>
 								<p class="lh-1 ls-m"> خرید شما در انتظار ارسال است  </p>
@@ -123,5 +124,13 @@
 							class="d-icon-arrow-left"></i></a>
 				</div>
 			</div>
+                                {{ message }}
+            {% else %}
+                                <div class="icon-box-content text-right">
+                                    <h5 class="icon-box-title font-weight-bold lh-1 mb-1">پرداخت انجام نشد!</h5>
+                                    <p class="lh-1 ls-m"><a href="{% url 'store:index' %}">بازگشت به فروشگاه</a></p>
+                                    <p class="lh-1 ls-m"><a href="{% url 'store:index' %}">{{ message }}</a></p>
+                                </div>
+            {% endif %}
 		</main>
 {% endblock %}

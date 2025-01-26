@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django import forms
 from .models import (
     Category,
     Product,
@@ -13,8 +14,18 @@ from .models import (
     Copen,
     UserCopenUsage,
     Banner,
-    BannerImage
+    BannerImage,
+    SliderProduct
 )
+
+
+class SliderProductForm(forms.ModelForm):
+    class Meta:
+        model = SliderProduct
+        fields = '__all__'
+        widgets = {
+            'product': forms.SelectMultiple(attrs={'size': 10}),
+        }
 
 
 @admin.register(Category)
@@ -119,3 +130,10 @@ class BannerAdmin(admin.ModelAdmin):
 class BannerImageAdmin(admin.ModelAdmin):
     list_display = ('title', 'short_description')
     search_fields = ('title', 'short_description')
+
+
+class SliderAdmin(admin.ModelAdmin):
+    form = SliderProductForm
+
+
+admin.site.register(SliderProduct, SliderAdmin)

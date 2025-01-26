@@ -268,3 +268,19 @@ class BannerImage(models.Model):
     class Meta:
         verbose_name = 'تصویر بنر'
         verbose_name_plural = 'تصویر های بنر'
+
+
+class SliderProduct(models.Model):
+    LOCATIONS_CHOICES = (
+        ('top', 'بالا'),
+        ('middle', 'وسط'),
+        ('button', 'پایین')
+    )
+    title = models.CharField(max_length=25)
+    short_description = models.CharField(max_length=100)
+    product = models.ManyToManyField(Product)
+    status = models.BooleanField(default=False)
+    location = models.CharField(choices=LOCATIONS_CHOICES, max_length=20, default='button')
+
+    def __str__(self):
+        return self.title

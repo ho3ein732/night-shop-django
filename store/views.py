@@ -12,6 +12,7 @@ from blog.models import BlogPost
 from .forms import SearchForm, ContactUsForm, EmailForm
 from django.db.models import Q
 from cart.cart import Cart
+from .models import SliderProduct
 
 
 # Create your views here.
@@ -45,6 +46,9 @@ class Index(ListView):
         context['button_banners'] = Banner.objects.filter(status=True, position='button')
         cart = Cart(request=self.request)
         context['my_price'] = cart.get_total_price()
+        context['top_slider_products'] = SliderProduct.objects.filter(status=True, location='top', product__isnull=False).distinct()
+        context['middle_slider_products'] = SliderProduct.objects.filter(status=True, location='middle', product__isnull=False).distinct()
+        context['button_slider_products'] = SliderProduct.objects.filter(status=True, location='button', product__isnull=False).distinct()
         return context
 
 

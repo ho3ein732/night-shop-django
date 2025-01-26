@@ -6,7 +6,7 @@ from store.models import Product
 # Create your models here.
 
 class Address(models.Model):
-    user = models.ForeignKey(NightUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(NightUser, on_delete=models.CASCADE, related_name='address')
     first_name = models.CharField(max_length=25)
     last_name = models.CharField(max_length=25)
     province = models.CharField(max_length=25)

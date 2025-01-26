@@ -210,8 +210,8 @@
                 </div>
                 {% endif %}
                 <div class="product-action-vertical">
-                    <a href="" class="btn-product-icon btn-cart" title="افزودن به سبد خرید" data-product-id="{{ product.id }}"><i class="d-icon-bag" id="added"></i></a>
-                    <a href="#" class="btn-product-icon btn-wishlist" title="اضافه به علاقه‌مندی" data-product-id="{{ product.id }}"><i class="d-icon-heart"></i></a>
+                    <a href="{% url 'cart:cart-detail' %}" class="btn-product-icon btn-cart" title="افزودن به سبد خرید" data-product-id="{{ product.id }}"><i class="d-icon-bag" id="added"></i></a>
+                    <a href="{% url 'cart:cart-detail' %}" class="btn-product-icon btn-wishlist" title="اضافه به علاقه‌مندی" data-product-id="{{ product.id }}"><i class="d-icon-heart"></i></a>
                 </div>
                 <div class="product-action">
                     <a href="{{ product.get_absolute_url }}" class="btn-product " title="مشاهده و انتخاب">مشاهده و انتخاب</a>
@@ -244,6 +244,84 @@
         {% endfor %}
     </div>
 </section>
+
+{% if middle_slider_products %}
+    {% for slider in middle_slider_products %}
+        <section class="product-wrapper container appear-animate mt-6 mt-md-10 pt-4 pb-8" data-animation-options="{'delay': '.3s'}">
+            <h2 class="title title-center mb-5">{{ slider.title }}</h2>
+            <div class="owl-carousel owl-theme row owl-nav-full cols-2 cols-md-3 cols-lg-4" data-owl-options="{
+                'rtl':true,
+                'items': 5,
+                'nav': false,
+                'loop': false,
+                'dots': true,
+                'margin': 20,
+                'responsive': {
+                    '0': {
+                        'items': 2
+                    },
+                    '768': {
+                        'items': 3
+                    },
+                    '992': {
+                        'items': 4,
+                        'dots': false,
+                        'nav': true
+                    }
+                }
+            }">
+                {% for product in slider.product.all %}
+                <div class="product text-center">
+                    <figure class="product-media">
+                        {% with product.images.all|first as image %}
+                            <a href="{{ product.get_absolute_url }}">
+                                <img src="{{ image.file.url }}" alt="{{ product.name }}" width="280" height="315" style="background-color: #f2f3f5;" />
+                            </a>
+                        {% endwith %}
+                        {% if product.discount > 0 %}
+                        <div class="product-label-group">
+                            <span class="product-label label-sale">{{ product.discount }}% تخفیف</span>
+                        </div>
+                        {% endif %}
+                        <div class="product-action-vertical">
+                            <a href="{% url 'cart:cart-detail' %}" class="btn-product-icon btn-cart" title="افزودن به سبد خرید" data-product-id="{{ product.id }}"><i class="d-icon-bag" id="added"></i></a>
+                            <a href="{% url 'cart:cart-detail' %}" class="btn-product-icon btn-wishlist" title="اضافه به علاقه‌مندی" data-product-id="{{ product.id }}"><i class="d-icon-heart"></i></a>
+                        </div>
+                        <div class="product-action">
+                            <a href="{{ product.get_absolute_url }}" class="btn-product " title="مشاهده و انتخاب">مشاهده و انتخاب</a>
+                        </div>
+                    </figure>
+                    <div class="product-details rtl">
+                        <div class="product-cat">
+                            <a href="#">{{ product.category.name }}</a>
+                        </div>
+                        <h3 class="product-name">
+                            <a href="#">{{ product.name }}</a>
+                        </h3>
+                        <div class="product-price">
+                            {% if product.discount > 0 %}
+                            <span class="price">{{ product.discounted_price  }} تومان</span>
+                            <del>{{ product.price }} تومان</del>
+                            {% else %}
+                            <span class="price">{{ product.price }} تومان</span>
+                            {% endif %}
+                        </div>
+                        <div class="ratings-container">
+                            <div class="ratings-full">
+                                <span class="ratings" style="width:{{ product.sell|floatformat:0 }}%"></span>
+                                <span class="tooltiptext tooltip-top"></span>
+                            </div>
+                            <a href="#" class="rating-reviews">( {{ product.sell }} فروش )</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endfor %}
+{% endif %}
+
+
 
 
                 <section class="blog-post-wrapper mt-6 mt-md-10 pt-7 appear-animate"
@@ -472,6 +550,83 @@
                             </div>
                         {% endfor %}
                     {% endif %}
+
+            {% if button_slider_products %}
+    {% for slider in button_slider_products %}
+        <section class="product-wrapper container appear-animate mt-6 mt-md-10 pt-4 pb-8" data-animation-options="{'delay': '.3s'}">
+            <h2 class="title title-center mb-5">{{ slider.title }}</h2>
+            <div class="owl-carousel owl-theme row owl-nav-full cols-2 cols-md-3 cols-lg-4" data-owl-options="{
+                'rtl':true,
+                'items': 5,
+                'nav': false,
+                'loop': false,
+                'dots': true,
+                'margin': 20,
+                'responsive': {
+                    '0': {
+                        'items': 2
+                    },
+                    '768': {
+                        'items': 3
+                    },
+                    '992': {
+                        'items': 4,
+                        'dots': false,
+                        'nav': true
+                    }
+                }
+            }">
+                {% for product in slider.product.all %}
+                <div class="product text-center">
+                    <figure class="product-media">
+                        {% with product.images.all|first as image %}
+                            <a href="{{ product.get_absolute_url }}">
+                                <img src="{{ image.file.url }}" alt="{{ product.name }}" width="280" height="315" style="background-color: #f2f3f5;" />
+                            </a>
+                        {% endwith %}
+                        {% if product.discount > 0 %}
+                        <div class="product-label-group">
+                            <span class="product-label label-sale">{{ product.discount }}% تخفیف</span>
+                        </div>
+                        {% endif %}
+                        <div class="product-action-vertical">
+                            <a href="{% url 'cart:cart-detail' %}" class="btn-product-icon btn-cart" title="افزودن به سبد خرید" data-product-id="{{ product.id }}"><i class="d-icon-bag" id="added"></i></a>
+                            <a href="{% url 'cart:cart-detail' %}" class="btn-product-icon btn-wishlist" title="اضافه به علاقه‌مندی" data-product-id="{{ product.id }}"><i class="d-icon-heart"></i></a>
+                        </div>
+                        <div class="product-action">
+                            <a href="{{ product.get_absolute_url }}" class="btn-product " title="مشاهده و انتخاب">مشاهده و انتخاب</a>
+                        </div>
+                    </figure>
+                    <div class="product-details rtl">
+                        <div class="product-cat">
+                            <a href="#">{{ product.category.name }}</a>
+                        </div>
+                        <h3 class="product-name">
+                            <a href="#">{{ product.name }}</a>
+                        </h3>
+                        <div class="product-price">
+                            {% if product.discount > 0 %}
+                            <span class="price">{{ product.discounted_price  }} تومان</span>
+                            <del>{{ product.price }} تومان</del>
+                            {% else %}
+                            <span class="price">{{ product.price }} تومان</span>
+                            {% endif %}
+                        </div>
+                        <div class="ratings-container">
+                            <div class="ratings-full">
+                                <span class="ratings" style="width:{{ product.sell|floatformat:0 }}%"></span>
+                                <span class="tooltiptext tooltip-top"></span>
+                            </div>
+                            <a href="#" class="rating-reviews">( {{ product.sell }} فروش )</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endfor %}
+{% endif %}
+
 
         </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
